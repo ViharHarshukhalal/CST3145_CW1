@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After School Classes</title>
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script src="lessons.js" type="module"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="controls">
+            <label>Sort By:</label>
+            <select v-model="sortAttribute">
+                <option value="subject">Subject</option>
+                <option value="location">Location</option>
+                <option value="price">Price</option>
+                <option value="spaces">Spaces</option>
+            </select>
+            <label>Sort Order:</label>
+            <select v-model="sortOrder">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+            <button @click="isCartVisible = !isCartVisible" :disabled="isCartEmpty" class="ShowCart">
+                ({{ cartItemCount }})Show Cart
+            </button>
+            
+        </div>
+        
+        <div class="lesson-cards">
+            <div v-for="lesson in sortedLessons" :key="lesson.id" class="lesson-card" v-if="!isCartVisible">
+                <h2>{{ lesson.subject }}</h2>
+                <img :src="lesson.image" alt="Lesson Image" class="Logos">
+                <p><strong>Location:</strong> {{ lesson.location }}</p>
+                <p><strong>Price:</strong> £{{ lesson.price }}</p>
+                <p><strong>Spaces available:</strong> {{ lesson.spaces }}</p>
+                <button v-if="lesson.spaces > 0" @click="addToCart(lesson.id)" class="addToCartButton">Add to Cart</button>
+                <button v-else disabled class="SoldOut">Sold Out</button>
+                
+            </div>
+        </div>
+
+        <div v-if="isCartVisible">
+            <h2>Shopping Cart</h2>
+            <button @click="isCartVisible = false">← Back to Lessons</button>
+            <div v-for="cartItem in cart" :key="cartItem.id" class="cart-item">
+                <div class="cart-item-content">
+                    <p>{{ cartItem.subject }} - £{{ cartItem.price }} ({{ cartItem.quantity }})</p>
+                    <button @click="removeFromCart(cartItem.id)" class="RemoveFromCart">Remove</button>
+                </div>
+            </div>
+        </div>
+        
+        
+    
+        <div v-if="isCartVisible && cart.length > 0">
+            
+            <h2>Checkout</h2>
+            <label>Name:</label>
+        <input v-model="customerName" @input="validateName" type="text" placeholder="Enter your name"><br>
+        <label>Phone Number:</label>
+        <input v-model="phoneNumber" @input="validatePhone" type="tel" placeholder="Enter your phone number">
+        <button @click="checkout" :disabled="!isNameValid || !isPhoneValid">Checkout</button>
+            
+        </div>
+        
+    </div>
+    
+    
+    <script type="module">
+        import lessons from './lessons.js';
+        new Vue({
+            el: '#app',
+            data: {
+                lessons: lessons,
+                sortAttribute: 'subject',
+                sortOrder: 'asc',
+                cart: [],
+                isCartVisible: false,
+                customerName: '',
+                phoneNumber: '',
+                isNameValid: false,
+                isPhoneValid: false
+            },
+            methods: {
+                addToCart(lessonId) {
+                    const lesson = this.lessons.find(l => l.id === lessonId);
+                    const cartItem = this.cart.find(item => item.id === lessonId);
+                    if (lesson.spaces > 0) {
+                        if (cartItem) {
+                            cartItem.quantity++;
+                            lesson.spaces--;
+                        } else {
+                            lesson.spaces--;
+                            this.cart.push({ ...lesson, quantity: 1 });
+                        }
+                        
+                    }
+                },
+
+                // canAddToCart(lesson) {
+                //     return lesson.spaces > 0;
+                // },
+
+                removeFromCart(lessonId) {
+                    const cartItem = this.cart.find(item => item.id === lessonId);
+                    if (cartItem) {
+                        if (cartItem.quantity > 1) {
+                            // If quantity is more than 1, decrement the quantity
+                            cartItem.quantity--;
+                        } else {
+                            // If quantity is 1, remove the entire item from the cart
+                            const lessonIndex = this.cart.findIndex(lesson => lesson.id === lessonId);
+                            if (lessonIndex !== -1) {
+                                this.cart.splice(lessonIndex, 1);
+                            }
+                        }
+                        // Increment the spaces in the original lessons list
+                        const originalLesson = this.lessons.find(lesson => lesson.id === lessonId);
+                        if (originalLesson) {
+                            originalLesson.spaces++;
+                        }
+                    }
+                },
+
+                validateName() {
+                    // Validate name using regular expression
+                    this.isNameValid = /^[A-Za-z]+$/.test(this.customerName);
+                },
+
+                validatePhone() {
+                    // Validate phone number using regular expression
+                    this.isPhoneValid = /^[0-9]+$/.test(this.phoneNumber);
+                },
+                
+                checkout() {
+                    // Perform checkout logic here if needed
+                    // Reset the form after checkout
+                    this.customerName = '';
+                    this.phoneNumber = '';
+                    this.isNameValid = false;
+                    this.isPhoneValid = false;
+                }
+            },
+            
+            computed:{
+                sortedLessons() {
+                    return this.lessons.slice().sort((a, b) => {
+                    const modifier = this.sortOrder === 'desc' ? -1 : 1;
+                    return modifier * (a[this.sortAttribute] > b[this.sortAttribute] ? 1 : -1);
+                    });
+                },
+                lessonsWithSpaces() {
+                    return this.lessons.filter(lesson => lesson.spaces > 0);
+                },
+                isCartEmpty() {
+                    return this.cart.length === 0;
+                },
+                cartItemCount() {
+                    return this.cart.length;
+                }
+            }
+        });
+    </script>
+
+    <style>
+
+        body {
+            background-color: #DDE9F5;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .lesson-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .lesson-card {
+            border-style: outset;
+            background-color: #FF6600;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .lesson-card img {
+            max-width: 100%;
+            max-height: 150px;
+            margin-bottom: 10px;
+        }
+        
+
+        /* Add to Cart Button */
+        .addToCartButton {
+        background-color: #c2fbd7;
+        border-radius: 100px;
+        box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+        color: green;
+        cursor: pointer;
+        display: inline-block;
+        font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+        padding: 7px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: all 250ms;
+        border: 0;
+        font-size: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .addToCartButton:hover {
+        box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+        transform: scale(1.05) rotate(-1deg);
+        }
+        
+
+        /* Sold Out Button */
+        .SoldOut {
+        /* display: flex; */
+        flex-direction: column;
+        align-items: center;
+        padding: 6px 14px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        border-radius: 6px;
+        color: #3D3D3D;
+        background: #fff;
+        border: none;
+        box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .SoldOut:focus {
+        box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+        outline: 0;
+        }
+        
+
+        /* Lesson Cards */
+        .lesson-cards {
+        padding: 0.6em 2em;
+        border: none;
+        outline: none;
+        color: rgb(255, 255, 255);
+        background: #ebb0b0;
+        cursor: pointer;
+        position: relative;
+        z-index: 0;
+        border-radius: 10px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .lesson-cards:before {
+        content: "";
+        background: linear-gradient(
+            45deg,
+            #ff0000,
+            #ff7300,
+            #fffb00,
+            #48ff00,
+            #00ffd5,
+            #002bff,
+            #7a00ff,
+            #ff00c8,
+            #ff0000
+        );
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        background-size: 400%;
+        z-index: -1;
+        filter: blur(5px);
+        -webkit-filter: blur(5px);
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        animation: glowing-button-85 20s linear infinite;
+        transition: opacity 0.3s ease-in-out;
+        border-radius: 10px;
+        }
+
+        @keyframes glowing-button-85 {
+        0% {
+            background-position: 0 0;
+        }
+        50% {
+            background-position: 400% 0;
+        }
+        100% {
+            background-position: 0 0;
+        }
+        }
+
+        .lesson-cards:after {
+        z-index: -1;
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #5fbaf2;
+        left: 0;
+        top: 0;
+        border-radius: 10px;
+        }
+
+
+        /* CSS */
+        .RemoveFromCart {
+        appearance: none;
+        background-color: #FAFBFC;
+        border: 1px solid rgba(27, 31, 35, 0.15);
+        border-radius: 6px;
+        box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+        box-sizing: border-box;
+        color: #24292E;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        list-style: none;
+        padding: 6px 16px;
+        position: relative;
+        transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: middle;
+        white-space: nowrap;
+        word-wrap: break-word;
+        }
+
+        .RemoveFromCart:hover {
+        background-color: #F3F4F6;
+        text-decoration: none;
+        transition-duration: 0.01s;
+        }
+
+        .cart-item {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .cart-item-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .controls label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .controls select {
+            margin-right: 20px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .controls .ShowCart {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .controls .ShowCart:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .controls .ShowCart:hover {
+            background-color: #45a049;
+        }
+
+
+
+        
+
+
+    </style>
+</body>
+
+</html>
