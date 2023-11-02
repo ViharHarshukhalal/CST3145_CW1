@@ -7,6 +7,8 @@
     <title>After School Classes</title>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script src="lessons.js" type="module"></script>
+    
+
 </head>
 
 <body>
@@ -26,7 +28,7 @@
                 <option value="desc">Descending</option>
             </select>
             <button @click="isCartVisible = !isCartVisible" :disabled="isCartEmpty" class="ShowCart">
-                ({{ cartItemCount }})Show Cart
+                <img src="cart-shopping-solid.svg" alt="Download Icon"> ({{ cartItemCount }})Show Cart
             </button>
             
         </div>
@@ -391,11 +393,12 @@
         .controls .ShowCart {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 5px 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-bottom: 0px;
         }
 
         .controls .ShowCart:disabled {
@@ -406,6 +409,13 @@
         .controls .ShowCart:hover {
             background-color: #45a049;
         }
+        .ShowCart img {
+            width: 20px; /* Adjust the width as needed */
+            height: 20px; /* Adjust the height as needed */
+            margin-right: 5px; /* Add some space between the icon and text */
+            margin-bottom: 0%;
+        }
+
 
 
 
