@@ -52,7 +52,7 @@
 
         <div v-if="isCartVisible">
             <h2>Shopping Cart</h2>
-            <button @click="isCartVisible = false">← Back to Lessons</button>
+            <button @click="isCartVisible = false" class="GoBackButton">← Back to Lessons</button>
             <div v-for="cartItem in cart" :key="cartItem.id" class="cart-item">
                 <div class="cart-item-content">
                     <p>{{ cartItem.subject }} - £{{ cartItem.price }} ({{ cartItem.quantity }})</p>
@@ -69,7 +69,7 @@
             <label>Name:</label>
         <input v-model="customerName" @input="validateName" type="text" placeholder="Enter your name"><br>
         <label>Phone Number:</label>
-        <input v-model="phoneNumber" @input="validatePhone" type="tel" placeholder="Enter your phone number">
+        <input v-model="phoneNumber" @input="validatePhone" type="tel" placeholder="Enter your phone number"><br>
         <button @click="checkout" :disabled="!isNameValid || !isPhoneValid" class="Checkout">Checkout</button>
             
         </div>
