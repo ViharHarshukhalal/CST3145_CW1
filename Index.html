@@ -27,6 +27,10 @@
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
+
+            <label>Search:</label>
+            <input v-model="searchQuery" @input="performSearch" type="text" placeholder="Search lessons" class="SearchField">
+
             <button @click="isCartVisible = !isCartVisible" :disabled="isCartEmpty" class="ShowCart">
                 <img src="cart-shopping-solid.svg" alt="Download Icon"> ({{ cartItemCount }})Show Cart
             </button>
@@ -86,7 +90,8 @@
                 customerName: '',
                 phoneNumber: '',
                 isNameValid: false,
-                isPhoneValid: false
+                isPhoneValid: false,
+                searchQuery: ''
             },
             methods: {
                 addToCart(lessonId) {
@@ -146,14 +151,39 @@
                     this.phoneNumber = '';
                     this.isNameValid = false;
                     this.isPhoneValid = false;
+                },
+                performSearch() {
+                    // Reset sorting when performing a search
+                    this.sortAttribute = '';
+                    this.sortOrder = '';
+
+                    // Filter lessons based on the search query
+                    const query = this.searchQuery.toLowerCase();
+                    this.lessons = lessons.filter(
+                        lesson =>
+                            lesson.subject.toLowerCase().includes(query) ||
+                            lesson.location.toLowerCase().includes(query)
+                    );
                 }
             },
             
             computed:{
+                // sortedLessons() {
+                //     return this.lessons.slice().sort((a, b) => {
+                //     const modifier = this.sortOrder === 'desc' ? -1 : 1;
+                //     return modifier * (a[this.sortAttribute] > b[this.sortAttribute] ? 1 : -1);
+                //     });
+                // },
+
                 sortedLessons() {
+                    // If there's a search query, return filtered lessons; otherwise, sort as usual
+                    if (this.searchQuery) {
+                        return this.lessons;
+                    }
+
                     return this.lessons.slice().sort((a, b) => {
-                    const modifier = this.sortOrder === 'desc' ? -1 : 1;
-                    return modifier * (a[this.sortAttribute] > b[this.sortAttribute] ? 1 : -1);
+                        const modifier = this.sortOrder === 'desc' ? -1 : 1;
+                        return modifier * (a[this.sortAttribute] > b[this.sortAttribute] ? 1 : -1);
                     });
                 },
                 lessonsWithSpaces() {
