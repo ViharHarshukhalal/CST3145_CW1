@@ -109,24 +109,20 @@
                     }
                 },
 
-                // canAddToCart(lesson) {
-                //     return lesson.spaces > 0;
-                // },
 
                 removeFromCart(lessonId) {
                     const cartItem = this.cart.find(item => item.id === lessonId);
                     if (cartItem) {
                         if (cartItem.quantity > 1) {
-                            // If quantity is more than 1, decrement the quantity
+                            
                             cartItem.quantity--;
                         } else {
-                            // If quantity is 1, remove the entire item from the cart
+                            
                             const lessonIndex = this.cart.findIndex(lesson => lesson.id === lessonId);
                             if (lessonIndex !== -1) {
                                 this.cart.splice(lessonIndex, 1);
                             }
                         }
-                        // Increment the spaces in the original lessons list
                         const originalLesson = this.lessons.find(lesson => lesson.id === lessonId);
                         if (originalLesson) {
                             originalLesson.spaces++;
@@ -135,29 +131,24 @@
                 },
 
                 validateName() {
-                    // Validate name using regular expression
                     this.isNameValid = /^[A-Za-z]+$/.test(this.customerName);
                 },
 
                 validatePhone() {
-                    // Validate phone number using regular expression
                     this.isPhoneValid = /^[0-9]+$/.test(this.phoneNumber);
                 },
                 
                 checkout() {
-                    // Perform checkout logic here if needed
-                    // Reset the form after checkout
+                    alert('Order placed! Thank you for your purchase.');
                     this.customerName = '';
                     this.phoneNumber = '';
                     this.isNameValid = false;
                     this.isPhoneValid = false;
+                    
                 },
                 performSearch() {
-                    // Reset sorting when performing a search
                     this.sortAttribute = '';
                     this.sortOrder = '';
-
-                    // Filter lessons based on the search query
                     const query = this.searchQuery.toLowerCase();
                     this.lessons = lessons.filter(
                         lesson =>
@@ -168,15 +159,8 @@
             },
             
             computed:{
-                // sortedLessons() {
-                //     return this.lessons.slice().sort((a, b) => {
-                //     const modifier = this.sortOrder === 'desc' ? -1 : 1;
-                //     return modifier * (a[this.sortAttribute] > b[this.sortAttribute] ? 1 : -1);
-                //     });
-                // },
 
                 sortedLessons() {
-                    // If there's a search query, return filtered lessons; otherwise, sort as usual
                     if (this.searchQuery) {
                         return this.lessons;
                     }
