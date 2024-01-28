@@ -78,7 +78,6 @@
 
     
     <script type="module">
-        // import lessons from './lessons.js';
         new Vue({
             el: '#app',
             data: {
@@ -137,7 +136,7 @@
                 validatePhone() {
                     this.isPhoneValid = /^[0-9]+$/.test(this.phoneNumber);
                 },
-                
+                // 
                 checkout() {
                     // Prepare order details
                     const order = {
@@ -145,8 +144,10 @@
                         phoneNumber: this.phoneNumber,
                         lessons: this.cart.map(item => ({
                             lessonId: item.id,
+                            price: item.price,
                             spaces: item.quantity
-                        }))
+                        })),
+                        total: this.cart.reduce((total, item) => total + item.price * item.quantity, 0)
                     };
 
                     // Make a POST request to save the order
@@ -159,6 +160,20 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        // After successful order submission, update lesson spaces
+                        const updateSpacesPromises = this.cart.map(item => {
+                            return fetch(`http://localhost:3000/collections/lessons/${item.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ spaces: item.spaces - item.quantity })
+                            });
+                        });
+
+                        return Promise.all(updateSpacesPromises);
+                    })
+                    .then(() => {
                         alert('Order placed! Thank you for your purchase.');
                         // Reset cart and form fields
                         this.cart = [];
@@ -172,6 +187,17 @@
                     });
                 },
                 
+                // performSearch() {
+                //     const query = this.searchQuery;
+                //     fetch(`http://localhost:3000/search?q=${encodeURIComponent(query)}`)
+                //         .then(response => response.json())
+                //         .then(data => {
+                //             this.lessons = data; // Update lessons with search results
+                //         })
+                //         .catch(error => {
+                //             console.error('Error fetching search results:', error);
+                //         });
+                // },
                 performSearch() {
                     this.sortAttribute = '';
                     this.sortOrder = '';
