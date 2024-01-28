@@ -139,12 +139,37 @@
                 },
                 
                 checkout() {
-                    alert('Order placed! Thank you for your purchase.');
-                    this.customerName = '';
-                    this.phoneNumber = '';
-                    this.isNameValid = false;
-                    this.isPhoneValid = false;
-                    
+                    // Prepare order details
+                    const order = {
+                        customerName: this.customerName,
+                        phoneNumber: this.phoneNumber,
+                        lessons: this.cart.map(item => ({
+                            lessonId: item.id,
+                            spaces: item.quantity
+                        }))
+                    };
+
+                    // Make a POST request to save the order
+                    fetch('http://localhost:3000/collections/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(order),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Order placed! Thank you for your purchase.');
+                        // Reset cart and form fields
+                        this.cart = [];
+                        this.customerName = '';
+                        this.phoneNumber = '';
+                        this.isNameValid = false;
+                        this.isPhoneValid = false;
+                    })
+                    .catch(error => {
+                        console.error('Error placing order:', error);
+                    });
                 },
                 
                 performSearch() {
