@@ -32,7 +32,7 @@
             <input v-model="searchQuery" @input="performSearch" type="text" placeholder="Search lessons" class="SearchField">
 
             <button @click="isCartVisible = !isCartVisible" :disabled="isCartEmpty" class="ShowCart">
-                <img src="cart-shopping-solid.svg" alt="Download Icon"> ({{ cartItemCount }})Show Cart
+                <img src="images/cart-shopping-solid.svg" alt="Download Icon"> ({{ cartItemCount }})Show Cart
             </button>
             
         </div>
@@ -153,7 +153,7 @@
                     const query = this.searchQuery.toLowerCase();
                     this.lessons = lessons.filter(
                         lesson =>
-                            lesson.subject.toLowerCase().includes(query), 
+                            lesson.subject.toLowerCase().includes(query),
                             lesson.location.toLowerCase().includes(query)
                     );
                 }
