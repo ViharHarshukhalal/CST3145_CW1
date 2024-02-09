@@ -235,16 +235,16 @@
                     return this.cart.reduce((total, item) => total + item.quantity, 0);
                 }
             },
-            created: function() {
-                fetch("http://localhost:3000/collections/lessons")
-                    .then(response => response.json())
-                    .then(data => {
-                        this.lessons = data;
-                    })
-                    .catch(error => {
-                        console.error('Error fetching lessons:', error);
-                    });
-            },
+            // created: function() {
+            //     fetch("http://localhost:3000/collections/lessons")
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             this.lessons = data;
+            //         })
+            //         .catch(error => {
+            //             console.error('Error fetching lessons:', error);
+            //         });
+            // },
             created: function() {
                 if ("serviceWorker" in navigator) {
                 navigator.serviceWorker.register("service-worker.js");
