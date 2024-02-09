@@ -1,0 +1,20 @@
+{
+    "name": "My Booking System PWA",
+    "short_name": "Booking App",
+    "description": "My online Booking System",
+    "icons": [
+    {
+        "src": "images/bookingSystem.png",
+        "sizes": "500x500",
+        "type": "image/png"
+    },
+    {
+        "src": "images/bookingSystem.png",
+        "sizes": "500x500",
+        "type": "image/png"
+    }
+    ],
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "background_color": "#260bca"
+}
