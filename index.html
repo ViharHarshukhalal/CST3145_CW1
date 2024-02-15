@@ -42,7 +42,7 @@
         <div class="lesson-cards">
             <div v-for="lesson in sortedLessons" :key="lesson.id" class="lesson-card" v-if="!isCartVisible">
                 <h2>{{ lesson.subject }}</h2>
-                <img :src="lesson.image" alt="Lesson Image" class="Logos">
+                <img :src="lesson.img" alt="Lesson Image" class="Logos">
                 <p><strong>Location:</strong> {{ lesson.location }}</p>
                 <p><strong>Price:</strong> £{{ lesson.price }}</p>
                 <p><strong>Spaces available:</strong> {{ lesson.spaces }}</p>
@@ -80,11 +80,11 @@
     <!-- ji -->
     
     <script type="module">
-        import lessons from './lessons.js';
+        // import lessons from './lessons.js';
         new Vue({
             el: '#app',
             data: {
-                lessons: lessons,
+                lessons: [],
                 sortAttribute: 'subject',
                 sortOrder: 'asc',
                 cart: [],
