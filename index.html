@@ -245,7 +245,7 @@
                         console.error('Error fetching lessons:', error);
                     });
             },
-            created: function() {
+            function() {
                 if ("serviceWorker" in navigator) {
                 navigator.serviceWorker.register("service-worker.js");
                 }
