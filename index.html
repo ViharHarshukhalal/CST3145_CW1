@@ -236,7 +236,7 @@
                 }
             },
             created: function() {
-                fetch("http://localhost:3000/collections/lessons")
+                fetch("http://bookingsystemfinal-env.eba-wwtpjrbh.eu-west-2.elasticbeanstalk.com/collections/lessons")
                     .then(response => response.json())
                     .then(data => {
                         this.lessons = data;
