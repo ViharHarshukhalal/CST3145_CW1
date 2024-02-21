@@ -161,21 +161,21 @@
                         },
                         body: JSON.stringify(order),
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        // After successful order submission, update lesson spaces
-                        const updateSpacesPromises = this.cart.map(item => {
-                            return fetch(`http://localhost:3000/collections/lessons/${item.id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ spaces: item.spaces - item.quantity })
-                            });
-                        });
+                    // .then(response => response.json())
+                    // .then(data => {
+                    //     // After successful order submission, update lesson spaces
+                    //     const updateSpacesPromises = this.cart.map(item => {
+                    //         return fetch(`http://localhost:3000/collections/lessons/${item.id}`, {
+                    //             method: 'PUT',
+                    //             headers: {
+                    //                 'Content-Type': 'application/json',
+                    //             },
+                    //             body: JSON.stringify({ spaces: item.spaces - item.quantity })
+                    //         });
+                    //     });
 
-                        return Promise.all(updateSpacesPromises);
-                    })
+                    //     return Promise.all(updateSpacesPromises);
+                    // })
                     .then(() => {
                         alert('Order placed! Thank you for your purchase.');
                         // Reset cart and form fields
