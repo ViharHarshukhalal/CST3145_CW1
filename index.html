@@ -154,7 +154,7 @@
                     };
 
                     // Make a POST request to save the order
-                    fetch('http://bookingsystemfinal-env.eba-wwtpjrbh.eu-west-2.elasticbeanstalk.com/collections/orders', {
+                    fetch('https://bookingsystemfinal-env.eba-wwtpjrbh.eu-west-2.elasticbeanstalk.com/collections/orders', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -236,7 +236,7 @@
                 }
             },
             created: function() {
-                fetch("http://bookingsystemfinal-env.eba-wwtpjrbh.eu-west-2.elasticbeanstalk.com/collections/lessons")
+                fetch("https://bookingsystemfinal-env.eba-wwtpjrbh.eu-west-2.elasticbeanstalk.com/collections/lessons")
                     .then(response => response.json())
                     .then(data => {
                         this.lessons = data;
