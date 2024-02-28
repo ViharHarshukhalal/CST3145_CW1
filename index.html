@@ -245,12 +245,17 @@
                         console.error('Error fetching lessons:', error);
                     });
             },
+            mounted: function() {
+                if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker.register("service-worker.js").then(() => {
+                        console.log("Service Worker Registered");
+                    }).catch(error => {
+                        console.error("Service Worker Registration Failed:", error);
+                    });
+                }
+            }
 
-            // function() {
-            //     if ("serviceWorker" in navigator) {
-            //     navigator.serviceWorker.register("service-worker.js");
-            //     }
-            // }
+            
         });
     </script>
 
