@@ -4,6 +4,12 @@ body {
     padding-right: 30px;
 }
 
+.siteTitle{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .controls {
     margin-bottom: 20px;
     display: flex;
